@@ -9,6 +9,8 @@ pipeline {
     environment { 
        //the location of the npm cache needs to be changed because otherwise it tries to put it into the root dir
        //but in case of multi branch builds the name of the working folder is not easy to guess... now trying to use the ./ to use the initial work dir which supposed to be the working dir. 
+       //NOTE: actually the workdir is created with some random unique id appeneded to it, but the same time the dir length is limited to 81 or so.. so it ends up chupping off the 
+       //      first charactes of the project name maing it difficult to recognize the folder name... but the good thing is that the initial dir is the working dir, so the ./ works.
        npm_config_cache = './.npm' 
        //CI stands for cont integration and if set then the test run of node will not ask for user input.. that would hang up the pipeline
        CI = 'true'
@@ -32,11 +34,27 @@ pipeline {
                 sh './jenkins/scripts/test.sh'
             }
         }
-        stage('Deliver') { 
+        stage('Deliver for Dev') { 
+            when {
+                anyOf {
+                     branch 'dev'
+                     branch 'qa'
+                }
+            }
             steps {
                 sh './jenkins/scripts/deliver-for-development.sh' 
                 input message: 'Finished using the web site? (Click "Proceed" to continue)' 
                 sh './jenkins/scripts/kill.sh' 
+            }
+        }
+        stage('Deploy for production') {
+            when {
+                branch 'prod'
+            }
+            steps {
+                sh './jenkins/scripts/deploy-for-production.sh'
+                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+                sh './jenkins/scripts/kill.sh'
             }
         }
     }
