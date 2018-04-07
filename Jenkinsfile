@@ -8,7 +8,8 @@ pipeline {
     //NOTE: use pypline command to set env
     environment { 
        //the location of the npm cache needs to be changed because otherwise it tries to put it into the root dir
-       npm_config_cache = '/var/lib/jenkins/workspace/building-a-multibranch-pipeline-project/.npm' 
+       //but in case of multi branch builds the name of the working folder is not easy to guess... now trying to use the ./ to use the initial work dir which supposed to be the working dir. 
+       npm_config_cache = './.npm' 
        //CI stands for cont integration and if set then the test run of node will not ask for user input.. that would hang up the pipeline
        CI = 'true'
     }
