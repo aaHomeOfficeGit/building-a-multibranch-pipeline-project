@@ -1,10 +1,4 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:6-alpine' 
-            args '-p 3300:3300 -p 5500:5500'
-        }
-    }
     //NOTE: use pypline command to set env
     environment {
         //devlare the dev and prod ports in one place so that they can be easily changed/maintined
@@ -19,6 +13,13 @@ pipeline {
        npm_config_cache = './.npm'
        //CI stands for cont integration and if set then the test run of node will not ask for user input.. that would hang up the pipeline
        CI = 'true'
+    }
+ 
+    agent {
+        docker {
+            image 'node:6-alpine'
+            args '-p 3300:3300 -p 5500:5500'
+        }
     }
 
     stages {
