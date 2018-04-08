@@ -8,8 +8,9 @@ pipeline {
     //NOTE: use pypline command to set env
     environment {
         //devlare the dev and prod ports in one place so that they can be easily changed/maintined
-        aaDEV_PORT = '3300'
-        aaPROD_PORT = '5500'
+        // accessing the env variables in scripting mode pipeline work, but in the declarative mode seems like it does not.
+        //aaDEV_PORT = '3300'
+        //aaPROD_PORT = '5500'       
 
        //the location of the npm cache needs to be changed because otherwise it tries to put it into the root dir
        //but in case of multi branch builds the name of the working folder is not easy to guess... now trying to use the ./ to use the initial work dir which supposed to be the working dir.
@@ -48,7 +49,7 @@ pipeline {
             }
             environment {
                 //try to set the dev and qa port to something different then the default 3000 port
-                PORT = ${aaDEV_PORT}
+                PORT = '3300'
             }
             steps {
                 sh './jenkins/scripts/deliver-for-development.sh' 
@@ -62,7 +63,7 @@ pipeline {
             }
             environment {
                 //try to set the production port to something different then the serve.js's default 5000 port (whihc is set in /node_modules/serve/lib/options.js)
-                PORT = ${aaPROD_PORT}
+                PORT = '5500'
             }
             steps {
                 sh './jenkins/scripts/deploy-for-production.sh'
