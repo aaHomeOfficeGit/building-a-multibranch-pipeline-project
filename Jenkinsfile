@@ -17,7 +17,7 @@ pipeline {
     agent {
         docker {
             image 'node:6-alpine' 
-            args '-p ${aaDEV_PORT}:${aaDEV_PORT} -p ${aaPROD_PORT}:${aaPROD_PORT}'
+            args '-p $aaDEV_PORT:$aaDEV_PORT -p $aaPROD_PORT:$aaPROD_PORT'
         }
     }
     stages {
