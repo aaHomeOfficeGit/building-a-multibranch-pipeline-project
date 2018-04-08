@@ -1,5 +1,11 @@
 pipeline {
-   //NOTE: use pypline command to set env
+    agent {
+        docker {
+            image 'node:6-alpine' 
+            args '-p 3300:3300 -p 5500:5500'
+        }
+    }
+    //NOTE: use pypline command to set env
     environment {
         //devlare the dev and prod ports in one place so that they can be easily changed/maintined
         aaDEV_PORT = '3300'
@@ -14,12 +20,6 @@ pipeline {
        CI = 'true'
     }
 
-    agent {
-        docker {
-            image 'node:6-alpine' 
-            args '-p $aaDEV_PORT:$aaDEV_PORT -p $aaPROD_PORT:$aaPROD_PORT'
-        }
-    }
     stages {
         stage('Build') { 
             steps {
