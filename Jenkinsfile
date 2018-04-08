@@ -48,7 +48,7 @@ pipeline {
             }
             environment {
                 //try to set the dev and qa port to something different then the default 3000 port
-                PORT = '${aaDEV_PORT}'
+                PORT = ${aaDEV_PORT}
             }
             steps {
                 sh './jenkins/scripts/deliver-for-development.sh' 
@@ -62,7 +62,7 @@ pipeline {
             }
             environment {
                 //try to set the production port to something different then the serve.js's default 5000 port (whihc is set in /node_modules/serve/lib/options.js)
-                PORT = '${aaPROD_PORT}'
+                PORT = ${aaPROD_PORT}
             }
             steps {
                 sh './jenkins/scripts/deploy-for-production.sh'
