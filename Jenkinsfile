@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:6-alpine' 
-            args '-p 3000:3000 -p 5000:5000'
+            args '-p 3000:3000 -p 5500:5500'
         }
     }
     //NOTE: use pypline command to set env
@@ -50,6 +50,10 @@ pipeline {
         stage('Deploy for production') {
             when {
                 branch 'prod'
+            }
+            environment {
+                //try to set the production port to something different then the serve.js's default 5000 port (whihc is set in /node_modules/serve/lib/options.js)
+                PORT = '5500'
             }
             steps {
                 sh './jenkins/scripts/deploy-for-production.sh'
