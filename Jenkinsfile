@@ -1,8 +1,13 @@
 pipeline {
+    environment {
+        //devlare the dev and prod ports in one place so that they can be easily changed/maintined
+        aaDEV_PORT = '3300'
+        aaPROD_PORT = '5500'
+    }
     agent {
         docker {
             image 'node:6-alpine' 
-            args '-p 3300:3300 -p 5500:5500'
+            args '-p ${aaDEV_PORT}:${aaDEV_PORT} -p ${aaPROD_PORT}:${aaPROD_PORT}'
         }
     }
     //NOTE: use pypline command to set env
@@ -43,7 +48,7 @@ pipeline {
             }
             environment {
                 //try to set the dev and qa port to something different then the default 3000 port
-                PORT = '3300'
+                PORT = '${aaDEV_PORT}'
             }
             steps {
                 sh './jenkins/scripts/deliver-for-development.sh' 
@@ -57,7 +62,7 @@ pipeline {
             }
             environment {
                 //try to set the production port to something different then the serve.js's default 5000 port (whihc is set in /node_modules/serve/lib/options.js)
-                PORT = '5500'
+                PORT = '${aaPROD_PORT}'
             }
             steps {
                 sh './jenkins/scripts/deploy-for-production.sh'
