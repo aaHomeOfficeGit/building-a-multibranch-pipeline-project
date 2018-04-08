@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:6-alpine' 
-            args '-p 3000:3000 -p 5500:5500'
+            args '-p 3300:3300 -p 5500:5500'
         }
     }
     //NOTE: use pypline command to set env
@@ -40,6 +40,10 @@ pipeline {
                      branch 'dev'
                      branch 'qa'
                 }
+            }
+            environment {
+                //try to set the dev and qa port to something different then the default 3000 port
+                PORT = '3300'
             }
             steps {
                 sh './jenkins/scripts/deliver-for-development.sh' 
