@@ -1,24 +1,24 @@
 pipeline {
+   //NOTE: use pypline command to set env
     environment {
         //devlare the dev and prod ports in one place so that they can be easily changed/maintined
         aaDEV_PORT = '3300'
         aaPROD_PORT = '5500'
+
+       //the location of the npm cache needs to be changed because otherwise it tries to put it into the root dir
+       //but in case of multi branch builds the name of the working folder is not easy to guess... now trying to use the ./ to use the initial work dir which supposed to be the working dir.
+       //NOTE: actually the workdir is created with some random unique id appeneded to it, but the same time the dir length is limited to 81 or so.. so it ends up chupping off the
+       //      first charactes of the project name maing it difficult to recognize the folder name... but the good thing is that the initial dir is the working dir, so the ./ works.
+       npm_config_cache = './.npm'
+       //CI stands for cont integration and if set then the test run of node will not ask for user input.. that would hang up the pipeline
+       CI = 'true'
     }
+
     agent {
         docker {
             image 'node:6-alpine' 
             args '-p ${env.aaDEV_PORT}:${env.aaDEV_PORT} -p ${env.aaPROD_PORT}:${env.aaPROD_PORT}'
         }
-    }
-    //NOTE: use pypline command to set env
-    environment { 
-       //the location of the npm cache needs to be changed because otherwise it tries to put it into the root dir
-       //but in case of multi branch builds the name of the working folder is not easy to guess... now trying to use the ./ to use the initial work dir which supposed to be the working dir. 
-       //NOTE: actually the workdir is created with some random unique id appeneded to it, but the same time the dir length is limited to 81 or so.. so it ends up chupping off the 
-       //      first charactes of the project name maing it difficult to recognize the folder name... but the good thing is that the initial dir is the working dir, so the ./ works.
-       npm_config_cache = './.npm' 
-       //CI stands for cont integration and if set then the test run of node will not ask for user input.. that would hang up the pipeline
-       CI = 'true'
     }
     stages {
         stage('Build') { 
